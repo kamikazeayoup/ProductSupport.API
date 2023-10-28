@@ -40,9 +40,10 @@ Here is a summary of the project's API endpoints:
 ## Getting Started
 
 To get started with this project, follow these steps:
-
-1. Clone the repository to your local development environment.
-2. Set up your Firebase Realtime Database and update the database configuration in the project. You will find the configuration in the `Program.cs` file.
+1. **Install .NET Core**: If you haven't already installed .NET Core, you can download and install it from the official website:
+   - [Download .NET](https://dotnet.microsoft.com/download)
+2. Clone the repository to your local development environment.
+3. Set up your Firebase Realtime Database and update the database configuration in the project. You will find the configuration in the `Program.cs` file.
 
    In the `Program.cs` file, look for the following code snippet:
 
