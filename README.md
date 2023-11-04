@@ -8,10 +8,9 @@ Product Support V1.5.0 is a versatile CRUD (Create, Read, Update, Delete) applic
 
 ## Diagrams
 
-![ERD](https://example.com/path-to-your-image.jpg](https://github.com/kamikazeayoup/ProductSupport.API/blob/master/ERD.png)
+![ERD](https://github.com/kamikazeayoup/ProductSupport.API/blob/master/ERD.png)
 
-This is a sample image that illustrates a concept.
-
+The Project Contains 3 Tables : Products, Categories and Companies
 ## Project Content
 
 This project now includes the following key features:
