@@ -1,5 +1,4 @@
-﻿using Firebase.Database;
-using Firebase.Database.Query;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProductSupport.API;
