@@ -1,26 +1,28 @@
-# Product Support - V1.0.0
+# Product Support - V1.5.0
 
-Welcome to the Product Support project, version 1.0. This project is built using ASP.NET Core Web API 6, following the Service Layer pattern and utilizing Dependency Injection. The database used in this project is Firebase Realtime Database.
+Welcome to the Product Support project, version 1.5. This project has undergone significant updates to enhance functionality and usability.
 
 ## Project Overview
 
-Product Support V1.0 is a simple CRUD (Create, Read, Update, Delete) application designed for managing and supporting product information. It allows you to add, modify, and delete products, as well as create and manage customized categories for these products.
+Product Support V1.5.0 is a versatile CRUD (Create, Read, Update, Delete) application designed for managing and supporting product information. It allows you to add, modify, and delete products, as well as create and manage customized categories. Companies can be associated with products to track ownership and relationships. The project leverages Entity Framework Core with PostgreSQL as the relational database management system (RDBMS) and AutoMapper for efficient data mapping.
+
+## Diagrams
+
+![ERD](https://example.com/path-to-your-image.jpg](https://github.com/kamikazeayoup/ProductSupport.API/blob/master/ERD.png)
+
+This is a sample image that illustrates a concept.
 
 ## Project Content
 
-This project includes the following key features:
+This project now includes the following key features:
 
-- **ASP.NET Core Web API 6**: The project is built on the latest version of ASP.NET Core Web API, providing robust and high-performance web services.
+- **Entity Framework Core and PostgreSQL**: The project has migrated to Entity Framework Core, using PostgreSQL as the RDBMS. This provides a robust and scalable database solution.
 
-- **Service Layer Pattern**: The codebase follows the Service Layer pattern, which promotes a structured and modular approach to application development. Services are responsible for the business logic, separating it from the controller layer.
+- **CRUD Operations**: The project supports basic CRUD operations for managing products, categories, and companies.
 
-- **Dependency Injection**: Dependency Injection is used to promote loose coupling between components and facilitate unit testing. This makes the project more maintainable and testable.
+- **Company Table**: A new "Company" table has been added to associate companies with products. This enables tracking and managing product ownership.
 
-- **Firebase Realtime Database**: The project leverages Firebase Realtime Database as the data storage solution. Firebase offers real-time data synchronization, scalability, and reliability.
-
-- **CRUD Operations**: The project supports basic CRUD operations for managing products and their associated categories.
-
-- **10 Endpoints**: The project exposes 10 API endpoints for interacting with product and category data. These endpoints cover operations like creating, updating, deleting, and retrieving data.
+- **Automapper**: AutoMapper is used for efficient data mapping between different data models, simplifying data transfer and management.
 
 ## Endpoints
 
@@ -36,19 +38,25 @@ Here is a summary of the project's API endpoints:
 8. `POST /api/Category` - Create a new category.
 9. `PUT /api/Category/{id}` - Update an existing category.
 10. `DELETE /api/Category/{id}` - Delete a category by ID.
+11. `GET /api/Company` - Retrieve a list of all companies.
+12. `GET /api/Company/{id}` - Retrieve a specific company by ID.
+13. `POST /api/Company` - Create a new company.
+14. `PUT /api/Company/{id}` - Update an existing company.
+15. `DELETE /api/Company/{id}` - Delete a company by ID.
 
 ## Getting Started
 
-To get started with this project, follow these steps:
-1. **Install .NET Core**: If you haven't already installed .NET Core, you can download and install it from the official website:
+To get started with this updated project, follow these steps:
+
+1. **Install .NET Core 6**: If you haven't already installed .NET Core 6, you can download and install it from the official website:
    - [Download .NET](https://dotnet.microsoft.com/download)
 2. Clone the repository to your local development environment.
-3. Set up your Firebase Realtime Database and update the database configuration in the project. You will find the configuration in the `Program.cs` file.
+3. Go to the `appsettings.json` file and add your PostgreSQL connection string as follows:
 
-   In the `Program.cs` file, look for the following code snippet:
+   ```json
+   "DefaultConnection": "Host=YOUR_HOST;Port=YOUR_PORT;Database=YOUR_DATABASE;Username=YOUR_USERNAME;Password=YOUR_PASSWORD"
+4. Open the Package Manager Console in Visual Studio (or use the command-line equivalent) and run the following command to create the database tables based on the migrations:
 
-   ```csharp
-   builder.Services.AddSingleton<FirebaseClient>(_ => new FirebaseClient("YOUR_FIREBASE_REALTIME_URL_HERE"));
-3. Build and run the ASP.NET Core Web API application.
-4. Use the provided API endpoints to manage products and categories.
+```Shell
+Update-DataBase
 
