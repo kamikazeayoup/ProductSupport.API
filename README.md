@@ -56,6 +56,13 @@ To get started with this updated project, follow these steps:
    "DefaultConnection": "Host=YOUR_HOST;Port=YOUR_PORT;Database=YOUR_DATABASE;Username=YOUR_USERNAME;Password=YOUR_PASSWORD"
 4. Open the Package Manager Console in Visual Studio (or use the command-line equivalent) and run the following command to create the database tables based on the migrations:
 
-```Shell
-Update-Database
+   ```Shell
+   Update-Database
+
+## Previous Version
+
+If you are looking for the previous version of this project, you can find it in the [ProductSupport V1.0 repository](https://github.com/kamikazeayoup/ProductSupport.API/tree/ProductSupportV1.0).
+
+Please note that the latest updates and features are available in the current version (V1.5.0).
+
 
