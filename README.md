@@ -27,21 +27,21 @@ This project now includes the following key features:
 
 Here is a summary of the project's API endpoints:
 
-1. `GET /api/Product` - Retrieve a list of all products.
-2. `GET /api/Product/{id}` - Retrieve a specific product by ID.
-3. `POST /api/Product` - Create a new product.
-4. `PUT /api/Product/{id}` - Update an existing product.
-5. `DELETE /api/Product/{id}` - Delete a product by ID.
-6. `GET /api/Category` - Retrieve a list of all categories.
-7. `GET /api/Category/{id}` - Retrieve a specific category by ID.
-8. `POST /api/Category` - Create a new category.
-9. `PUT /api/Category/{id}` - Update an existing category.
-10. `DELETE /api/Category/{id}` - Delete a category by ID.
-11. `GET /api/Company` - Retrieve a list of all companies.
-12. `GET /api/Company/{id}` - Retrieve a specific company by ID.
-13. `POST /api/Company` - Create a new company.
-14. `PUT /api/Company/{id}` - Update an existing company.
-15. `DELETE /api/Company/{id}` - Delete a company by ID.
+1. `GET /api/Products` - Retrieve a list of all products.
+2. `GET /api/Products/{id}` - Retrieve a specific product by ID.
+3. `POST /api/Products` - Create a new product.
+4. `PUT /api/Products/{id}` - Update an existing product.
+5. `DELETE /api/Products/{id}` - Delete a product by ID.
+6. `GET /api/Categories` - Retrieve a list of all categories.
+7. `GET /api/Categories/{id}` - Retrieve a specific category by ID.
+8. `POST /api/Categories` - Create a new category.
+9. `PUT /api/Categories/{id}` - Update an existing category.
+10. `DELETE /api/Categories/{id}` - Delete a category by ID.
+11. `GET /api/Companies` - Retrieve a list of all companies.
+12. `GET /api/Companies/{id}` - Retrieve a specific company by ID.
+13. `POST /api/Companies` - Create a new company.
+14. `PUT /api/Companies/{id}` - Update an existing company.
+15. `DELETE /api/Companies/{id}` - Delete a company by ID.
 
 ## Packages Used
 
