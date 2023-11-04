@@ -43,6 +43,20 @@ Here is a summary of the project's API endpoints:
 14. `PUT /api/Company/{id}` - Update an existing company.
 15. `DELETE /api/Company/{id}` - Delete a company by ID.
 
+## Packages Used
+
+This project utilizes the following packages:
+
+1. [AutoMapper](https://www.nuget.org/packages/AutoMapper)
+2. [AutoMapper.Extensions.Microsoft.DependencyInjection](https://www.nuget.org/packages/AutoMapper.Extensions.Microsoft.DependencyInjection/2.0.1)
+3. [Microsoft.EntityFrameworkCore](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore/7.0.13)
+4. [Microsoft.EntityFrameworkCore.Tools](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Tools/7.0.13)
+5. [Npgsql.EntityFrameworkCore.PostgreSQL](https://www.nuget.org/packages/Npgsql.EntityFrameworkCore.PostgreSQL/7.0.11)
+6. [Npgsql.EntityFrameworkCore.PostgreSQL.Design](https://www.nuget.org/packages/Npgsql.EntityFrameworkCore.PostgreSQL.Design/1.1.0)
+7. [Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite](https://www.nuget.org/packages/Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite/7.0.11)
+
+These packages play a crucial role in the functionality and features of the project. You can explore their documentation and learn more about how they are used within the code.
+
 ## Getting Started
 
 To get started with this updated project, follow these steps:
@@ -51,13 +65,21 @@ To get started with this updated project, follow these steps:
    - [Download .NET](https://dotnet.microsoft.com/download)
 2. Clone the repository to your local development environment.
 3. Go to the `appsettings.json` file and add your PostgreSQL connection string as follows:
-
    ```json
    "DefaultConnection": "Host=YOUR_HOST;Port=YOUR_PORT;Database=YOUR_DATABASE;Username=YOUR_USERNAME;Password=YOUR_PASSWORD"
 4. Open the Package Manager Console in Visual Studio (or use the command-line equivalent) and run the following command to create the database tables based on the migrations:
-
    ```Shell
    Update-Database
+5. Create the necessary directories for the project's file structure. You can do this manually by following these steps:
+   Navigate to the root of your project.
+   Create a directory named "Images."
+   Inside the "Images" directory, create two subdirectories: "Products" and "Companies."
+   Your file structure should look like this:
+   ```markdown
+      - Images/
+        - Products/
+        - Companies/
+
 
 ## Previous Version
 
