@@ -7,9 +7,9 @@ Welcome to the Product Support project, version 1.5. This project has undergone 
 Product Support V1.5.0 is a versatile CRUD (Create, Read, Update, Delete) application designed for managing and supporting product information. It allows you to add, modify, and delete products, as well as create and manage customized categories. Companies can be associated with products to track ownership and relationships. The project leverages Entity Framework Core with PostgreSQL as the relational database management system (RDBMS) and AutoMapper for efficient data mapping.
 
 ## Diagrams
-
+- ER-Diagram
 ![ERD](https://github.com/kamikazeayoup/ProductSupport.API/blob/master/ERD.png)
-                            ER-Diagram
+
 The Project Contains 3 Tables : Products, Categories and Companies
 ## Project Content
 
