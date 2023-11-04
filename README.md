@@ -57,5 +57,5 @@ To get started with this updated project, follow these steps:
 4. Open the Package Manager Console in Visual Studio (or use the command-line equivalent) and run the following command to create the database tables based on the migrations:
 
 ```Shell
-Update-DataBase
+Update-Database
 
