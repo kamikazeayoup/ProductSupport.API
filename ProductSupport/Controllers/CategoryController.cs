@@ -28,10 +28,10 @@ namespace ProductSupport.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategoryById(string id)
+        [HttpGet("(id)")]
+        public async Task<IActionResult> GetCategoryById(int id)
         {
-            var result = await _categoryService.GetCategoryById(id);
+            var result =  _categoryService.GetCategoryById(id);
             if (result == null)
             {
                 return NotFound();
@@ -51,15 +51,15 @@ namespace ProductSupport.Controllers
         }
 
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteById(string id)
+        [HttpDelete("(id)")]
+        public async Task<IActionResult> DeleteById(int id)
         {
             return await _categoryService.DeleteById(id);
 
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(UpdateCategoryDTO input, string id)
+        [HttpPut("(id)")]
+        public async Task<IActionResult> Update(UpdateCategoryDTO input, int id)
         {
             var result = await _categoryService.Update(input, id);
             if (result == null)

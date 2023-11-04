@@ -8,8 +8,8 @@ namespace ProductSupport.Interfaces
     {
         Task<Category> CreateCategory(InputCategoryDTO Createcategory);
         Task<List<Category>> GetAllCategorys();
-        Task<Category> GetCategoryById(string id);
-        Task<IActionResult> DeleteById(string id);
-        Task<Category> Update(UpdateCategoryDTO input, string id);
+        Category GetCategoryById(int id);
+        Task<IActionResult> DeleteById(int id);
+        Task<Category> Update(UpdateCategoryDTO input, int id);
     }
 }

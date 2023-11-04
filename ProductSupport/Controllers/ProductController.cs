@@ -17,19 +17,19 @@ namespace ProductSupport.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(InputProductDTO Createproduct)
+        public async Task<IActionResult> CreateProduct( InputProductDTO Createprdouct)
         {
-            var result = await _productService.CreateProduct(Createproduct);
+            var result = await _productService.CreateProduct(Createprdouct);
             if (result == null)
                 return NotFound("Cannot create one");
             return Ok(result);
 
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetProductById(string id)
+        [HttpGet("(id)")]
+        public async Task<IActionResult> GetProductById(int id)
         {
-            var result = await _productService.GetProductById(id);
+            var result = _productService.GetProductById(id);
             if (result == null)
                 return NotFound();
             return Ok(result);
@@ -47,16 +47,17 @@ namespace ProductSupport.Controllers
         }
 
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteById(string id)
+        [HttpDelete("(id)")]
+        public async Task<IActionResult> DeleteById(int id)
         {
+
             return await _productService.DeleteById(id);
 
 
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(UpdateProductDTO input, string id)
+        [HttpPut("(id)")]
+        public async Task<IActionResult> Update(UpdateProductDTO input, int id)
         {
             var result = await _productService.Update(input, id);
             if (result == null)

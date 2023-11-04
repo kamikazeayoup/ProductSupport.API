@@ -1,6 +1,8 @@
 ﻿using Firebase.Database;
 using Firebase.Database.Query;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ProductSupport.API;
 using ProductSupport.DTOs.CategoriesDTO;
 using ProductSupport.Interfaces;
 using ProductSupport.Models;
@@ -9,11 +11,11 @@ namespace ProductSupport.Services
 {
     public class CategoryService : ControllerBase, ICategoryService
     {
-        private readonly FirebaseClient _firebaseClient;
+        private readonly AppDbContext _db;
 
-        public CategoryService(FirebaseClient firebaseClient)
+        public CategoryService(AppDbContext db)
         {
-            _firebaseClient = firebaseClient;
+            _db = db;
         }
 
 
@@ -23,35 +25,27 @@ namespace ProductSupport.Services
 
             Category newCategory = new Category()
             {
-                Id = Guid.NewGuid().ToString("N"),
                 Name = Createcategory.Name,
                 Description = Createcategory.Description,
             };
-            await _firebaseClient
-           .Child("Categorys")
-           .Child(newCategory.Id)
-           .PutAsync(newCategory);
 
-            return await GetCategoryById(newCategory.Id);
+              _db.Categories.Add(newCategory);
+            var result = await _db.SaveChangesAsync();
+            if (result <= 0)
+                return null;
+
+            return newCategory;
         }
 
-        public async Task<Category> GetCategoryById(string id)
+        public Category GetCategoryById(int id)
         {
-            var productsInCategory = await _firebaseClient
-                .Child("Categorys")
-                .Child(id)
-                .OnceSingleAsync<Category>();
+            var productsInCategory =   _db.Categories.Find(id);
 
             if (productsInCategory == null)
                 return null;
 
-            Category cat = new Category()
-            {
-                Id = productsInCategory.Id,
-                Name = productsInCategory.Name,
-                Description = productsInCategory.Description
-            };
-            return cat;
+            
+            return productsInCategory;
 
 
 
@@ -59,73 +53,49 @@ namespace ProductSupport.Services
 
         public async Task<List<Category>> GetAllCategorys()
         {
-            var dinos = await _firebaseClient
-            .Child("Categorys")
-            .OnceAsync<Category>();
-
-            List<Category> result = new List<Category>();
-            foreach (var cat in dinos)
-            {
-                result.Add(new Category()
-                {
-                    Id = cat.Object.Id,
-                    Name = cat.Object.Name,
-                    Description = cat.Object.Description
-                });
-            }
-            return result;
+            return await _db.Categories.ToListAsync();
 
 
         }
 
 
-        public async Task<IActionResult> DeleteById(string id)
+        public async Task<IActionResult> DeleteById(int id)
         {
 
-            var category = await _firebaseClient.Child("Categorys").Child(id).OnceSingleAsync<Category>();
+            var Findcategory = GetCategoryById(id);
 
-            if (category == null)
+            if (Findcategory == null)
             {
                 return NotFound();
             }
-            var productsInCategory = await _firebaseClient.Child("Products")
-                .OrderBy("CategoryID")
-                .EqualTo(id)
-                .OnceAsync<Product>();
-            if (productsInCategory.Count > 0)
-            {
-                return NotFound("Can't delete, There's products Depends on this");
-            }
 
-            await _firebaseClient.Child("Categorys").Child(id).DeleteAsync();
+             _db.Categories.Remove(Findcategory);
+            var result = await _db.SaveChangesAsync();
+            if(result <= 0)
+                return NotFound();
+
             return NoContent();
 
         }
 
-        public async Task<Category> Update(UpdateCategoryDTO input, string id)
+        public async Task<Category> Update(UpdateCategoryDTO input, int id)
         {
 
-            var ifAva = await GetCategoryById(id);
-            if (ifAva == null)
+            var CategoryFind =  GetCategoryById(id);
+            if (CategoryFind == null)
                 return null;
-            Category cat = new Category()
-            {
-                Id = id,
 
 
-            };
 
-            //Validation 
-            cat.Name = (input.Name == null) ? ifAva.Name : input.Name;
-            cat.Description = (input.Description == null) ? ifAva.Description : input.Description;
+            CategoryFind.Name = (input.Name == null) ? CategoryFind.Name : input.Name;
+            CategoryFind.Description = (input.Description == null) ? CategoryFind.Description : input.Description;
+            _db.Categories.Update(CategoryFind);
+          var result = await _db.SaveChangesAsync();
+            if (result <= 0)
+                return null;
 
-            await _firebaseClient
-          .Child("Categorys")
-          .Child(cat.Id)
-          .PutAsync(cat);
 
-            return await GetCategoryById(cat.Id);
-
+            return GetCategoryById(id);
 
         }
     }

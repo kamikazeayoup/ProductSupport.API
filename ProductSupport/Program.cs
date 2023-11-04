@@ -1,6 +1,10 @@
-using Firebase.Database;
+using Microsoft.EntityFrameworkCore;
+using ProductSupport.API;
+using AutoMapper;
 using ProductSupport.Interfaces;
 using ProductSupport.Services;
+using ProductSupport.API.Services;
+using ProductSupport.API.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +14,15 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<FirebaseClient>(_ => new FirebaseClient("https://palastine-232d9-default-rtdb.firebaseio.com/"));
-
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<ICompanyService, CompanyService>();
+
+builder.Services.AddTransient<IImageService, ImageService>();
+
 builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
 var app = builder.Build();
