@@ -1,4 +1,4 @@
-# Product Support - V1.0
+# Product Support - V1.0.0
 
 Welcome to the Product Support project, version 1.0. This project is built using ASP.NET Core Web API 6, following the Service Layer pattern and utilizing Dependency Injection. The database used in this project is Firebase Realtime Database.
 
