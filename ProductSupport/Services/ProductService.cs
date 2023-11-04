@@ -1,6 +1,11 @@
-﻿using Firebase.Database;
+﻿using AutoMapper;
+using Firebase.Database;
 using Firebase.Database.Query;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ProductSupport.API;
+using ProductSupport.API.DTOs.ProductsDTO;
+using ProductSupport.API.Interfaces;
 using ProductSupport.DTOs.ProductsDTO;
 using ProductSupport.Interfaces;
 using ProductSupport.Models;
@@ -9,131 +14,162 @@ namespace ProductSupport.Services
 {
     public class ProductService : ControllerBase, IProductService
     {
-        private readonly FirebaseClient _firebaseClient;
+        private readonly AppDbContext _db;
         private readonly ICategoryService _categoryService;
+        private readonly IMapper _mapper;
+        private readonly IImageService _imageservice;
 
 
-        public ProductService(ICategoryService categoryService, FirebaseClient firebaseClient)
+        public ProductService(IImageService imageService, AppDbContext db , IMapper mapper , ICategoryService categoryService)
         {
+            _imageservice = imageService;
+            _db = db;
+            _mapper = mapper;
             _categoryService = categoryService;
-            _firebaseClient = firebaseClient;
         }
-        public async Task<Product> CreateProduct(InputProductDTO Createproduct)
+        public async Task<ViewProductDTO> CreateProduct(InputProductDTO Createproduct)
         {
 
-            Product prodct = new Product()
+            Product newProduct = new Product()
             {
-                ID = Guid.NewGuid().ToString("N"),
                 Name = Createproduct.Name,
+                Code = Createproduct.Code,
                 Description = Createproduct.Description,
                 CategoryID = Createproduct.CategoryID,
-                ImageUrl = Createproduct.ImageUrl,
+                CompanyID = Createproduct.CompanyID,
 
             };
 
-            //check if the Category is Found With given ID
-            var CategoryCheck = await _categoryService.GetCategoryById(Createproduct.CategoryID);
-            if (CategoryCheck == null)
+            //Check if The Category Exists
+            var CategoryCheck =  _categoryService.GetCategoryById(newProduct.CategoryID);
+            if (CategoryCheck == null || newProduct.Code == "")
                 return null;
 
-            await _firebaseClient
-           .Child("Products")
-           .Child(prodct.ID)
-           .PutAsync<Product>(prodct);
-            return await GetProductById(prodct.ID);
+            //Check if The Company Exists
+            var CompanyCheck = _db.Companies.Find(newProduct.CompanyID);
+            if (CompanyCheck == null)
+                return null;
 
+            //check if The Code Unique Or Not 
+            var CheckCode = _db.Products.FirstOrDefault(i => i.Code == newProduct.Code);
+            if (CheckCode != null)
+                return null;
 
+            //Add The Photo
+            if(Createproduct.Base64Image != null)
+            {
+            newProduct.ImagePath = _imageservice.SaveImage(Createproduct.Base64Image  , newProduct.Code, "Products");
+                
+            }
+
+            await _db.Products.AddAsync(newProduct);
+            var result = await _db.SaveChangesAsync();
+            if (result <= 0)
+            {
+                _imageservice.DeleteImage(newProduct.ImagePath);
+                return null;
+            }
+            ViewProductDTO viewProduct = new ViewProductDTO();
+            viewProduct = _mapper.Map<ViewProductDTO>(newProduct);
+            
+            return viewProduct;
         }
 
 
-        public async Task<Product> GetProductById(string id)
+        
+        public ViewProductDTO GetProductById(int id)
         {
-            var productavailable = await _firebaseClient
-                 .Child("Products")
-                 .Child(id)
-                 .OnceSingleAsync<Product>();
+            var productavailable = _db.Products.Find(id);
 
             if (productavailable == null)
                 return null;
+            ViewProductDTO viewProduct = new ViewProductDTO();
+            viewProduct = _mapper.Map<ViewProductDTO>(productavailable);
 
-            Product cat = new Product()
-            {
-                ID = productavailable.ID,
-                Name = productavailable.Name,
-                Description = productavailable.Description,
-                CategoryID = productavailable.CategoryID,
-                ImageUrl = productavailable.ImageUrl
-            };
-            return cat;
+            
+            return viewProduct;
         }
 
-        public async Task<List<Product>> GetAllProducts()
+        public async Task<List<ViewProductDTO>> GetAllProducts()
         {
-            var dinos = await _firebaseClient
-            .Child("Products")
-            .OnceAsync<Product>();
-
-            List<Product> result = new List<Product>();
-            foreach (var cat in dinos)
+            List< ViewProductDTO > AllProducts = new List<ViewProductDTO> ();
+            var listedproducts = _db.Products.ToList();
+            foreach(var product in listedproducts) 
             {
-                result.Add(new Product()
-                {
-                    ID = cat.Object.ID,
-                    Name = cat.Object.Name,
-                    Description = cat.Object.Description,
-                    CategoryID = cat.Object.CategoryID,
-                    ImageUrl = cat.Object.ImageUrl
-                });
+                ViewProductDTO prod = new ViewProductDTO();
+                prod = _mapper.Map<ViewProductDTO>(product);
+               
+                AllProducts.Add(prod);
             }
-            return result;
+            return AllProducts;
         }
 
 
-        public async Task<IActionResult> DeleteById(string id)
+        public async Task<IActionResult> DeleteById(int id)
         {
-            var product = await _firebaseClient.Child("Products").Child(id).OnceSingleAsync<Product>();
+            var product = await _db.Products.FindAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
+            
+            if(product.ImagePath != null)
+                _imageservice.DeleteImage(product.ImagePath);
 
-            await _firebaseClient.Child("Products").Child(id).DeleteAsync();
+            _db.Products.Remove(product);
+            var result = await _db.SaveChangesAsync();
+            if (result <= 0)
+                return NotFound();
+
+
             return NoContent();
 
         }
-        public async Task<Product> Update(UpdateProductDTO input, string id)
+        public async Task<ViewProductDTO> Update(UpdateProductDTO input, int id)
         {
 
-            var ifAva = await GetProductById(id);
-            if (ifAva == null)
+            var ProductFind = await _db.Products.FindAsync(id);
+            if (ProductFind == null)
                 return null;
-            Product prod = new Product()
-            {
-                ID = id,
-
-
-            };
-
+            
             //Validation 
-            prod.Name = (input.Name == null) ? ifAva.Name : input.Name;
-            prod.Description = (input.Description == null) ? ifAva.Description : input.Description;
-            prod.CategoryID = (input.CategoryID == null) ? ifAva.CategoryID : input.CategoryID;
-            prod.ImageUrl = (input.ImageUrl == null) ? ifAva.ImageUrl : input.ImageUrl;
-            if (prod.CategoryID != ifAva.CategoryID)
+            ProductFind.Name = (input.Name == null) ? ProductFind.Name : input.Name;
+            ProductFind.Description = (input.Description == null) ? ProductFind.Description : input.Description;
+            ProductFind.Code = (input.Code == null) ? ProductFind.Code : input.Code;
+            ProductFind.CategoryID = (input.CategoryID == null) ? ProductFind.CategoryID : (int)input.CategoryID;
+           //Check if the Category Changed
+            if (ProductFind.CategoryID == input.CategoryID)
             {
-                var CategoryCheck = await _categoryService.GetCategoryById(prod.ID);
+                var CategoryCheck = _categoryService.GetCategoryById(ProductFind.CategoryID);
                 if (CategoryCheck == null)
                     return null;
             }
+            //check if the company changed
+            if(ProductFind.CompanyID  == input.CompanyID)
+            {
+                var CompanyCheck = _db.Companies.Find(input.CompanyID);
+                if (CompanyCheck == null)
+                    return null;
 
+            }
+            //Check if The Photo Changed
+            if (input.Base64Image != null)
+            {
+                if (ProductFind.ImagePath != null)
+                    _imageservice.DeleteImage(ProductFind.ImagePath);
 
-            await _firebaseClient
-          .Child("Products")
-          .Child(prod.ID)
-          .PutAsync(prod);
+                ProductFind.ImagePath = _imageservice.SaveImage(input.Base64Image, ProductFind.Code  , "Products");
+            }
 
-            return await GetProductById(prod.ID);
+            _db.Products.Update(ProductFind);
+            var result = await _db.SaveChangesAsync();
+            if (result <= 0)
+                return null;
+            //Display After Update
+            ViewProductDTO viewProduct = new ViewProductDTO();
+            viewProduct = _mapper.Map<ViewProductDTO>(ProductFind);
+            return viewProduct;
 
         }
     }
